@@ -78,9 +78,9 @@ function App() {
             </button>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-4 flex flex-col gap-2">
             {taskList.map((task, idx) => (
-              <div key={idx}>
+              <div key={idx} className="w-1/2 flex  py-4 bg-green-300 rounded">
                 <div>{task.title}</div>
                 <div>{task.date}</div>
                 <div>{task.priority.toString()}</div>
