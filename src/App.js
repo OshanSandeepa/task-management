@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
+import TodoList from "./components/TodoList";
+import AddListForm from "./components/AddListForm";
 
 function App() {
   const [tasks, setTasks] = useState({
@@ -8,9 +10,8 @@ function App() {
     status: "",
     priority: false,
   });
-  const [taskList, setTaskList] = useState([]);
 
-  console.log(tasks);
+  const [taskList, setTaskList] = useState([]);
 
   const handleOnChange = (e) => {
     if (e.target.name === "priority") {
@@ -21,74 +22,59 @@ function App() {
   };
 
   const handleAdd = () => {
-    // const sampleList = [...taskList];
-    // sampleList.push(tasks);
-    // setTaskList(sampleList);
-    // setTasks({
-    //   title: "",
-    //   date: "",
-    //   status: "",
-    //   priority: false,
-    // });
+    if (tasks.title !== "" && tasks.date !== "") {
+      // const sampleList = [...taskList];
+      // sampleList.push(tasks);
+      // setTaskList(sampleList);
+      setTaskList([...taskList, tasks]);
+      // clear the input after task added to the list
+      setTasks({
+        title: "",
+        date: "",
+        status: false,
+        priority: false,
+      });
+    }
+  };
 
-    setTaskList([...taskList,tasks]);
+  const handleDelete = (id) => {
+    const newList = taskList.filter((task, idx) => idx !== id);
+    setTaskList(newList);
+  };
+
+  const handleEdit = (task, id) => {
+    const newTask = taskList.filter((_, idx) => idx === id);
+    setTasks(newTask[0]);
+    handleDelete(id);
+  };
+
+  const handleState = (idx) => {
+    const newList = taskList.map((item, index) => {
+      if (index === idx) {
+        return {
+          ...item,
+          status: !item.status,
+        };
+      }
+      return item;
+    });
+    setTaskList(newList);
   };
 
   return (
     <div className="App">
-      <div className="h-screen w-auto px-6 bg-blue-200">
-        <div className="flex items-center gap-8">
-          <div className="flex flex-col">
-            <label>Task</label>
-            <input
-              name="title"
-              type="text"
-              onChange={(e) => handleOnChange(e)}
-              value={tasks.title}
-              placeholder="Task"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label>Date</label>
-            <input
-              name="date"
-              type="date"
-              onChange={(e) => handleOnChange(e)}
-              value={tasks.date}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label>Priority</label>
-            <input
-              name="priority"
-              type="checkbox"
-              onChange={(e) => handleOnChange(e)}
-              checked={tasks.priority}
-            />
-          </div>
-
-          <div>
-            <button
-              className="bg-blue-400 px-4 py-2 min-w-[6rem] rounded"
-              onClick={handleAdd}
-            >
-              Add
-            </button>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-2">
-            {taskList.map((task, idx) => (
-              <div key={idx} className="w-1/2 flex  py-4 bg-green-300 rounded">
-                <div>{task.title}</div>
-                <div>{task.date}</div>
-                <div>{task.priority.toString()}</div>
-                <hr />
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="h-screen pt-6 w-auto px-6 bg-red-100 flex flex-col items-center">
+        <AddListForm
+          tasks={tasks}
+          handleOnChange={handleOnChange}
+          handleAdd={handleAdd}
+        />
+        <TodoList
+          taskList={taskList}
+          handleDelete={handleDelete}
+          handleEdit={handleEdit}
+          handleState={handleState}
+        />
       </div>
     </div>
   );
